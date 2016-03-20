@@ -1,0 +1,14 @@
+.logo {
+    font-size: 35vw;
+    line-height: 25vw;
+}
+
+.logo #general {
+    font-weight: 700;
+    letter-spacing: -8.95vw;
+}
+
+.logo #show {
+    letter-spacing: -2.4vw;
+    font-weight: 100;
+}
