@@ -10,7 +10,7 @@ spec:
     metadata:
       labels:
         name: general-show
-	version: v0.1-alpha
+        version: v0.1-alpha
     spec:
       containers:
       - name: general-show
