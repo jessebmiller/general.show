@@ -46,6 +46,4 @@ deployment:
       - ~/google-cloud-sdk/bin/gcloud config set container/cluster $cluster_name
       - ~/google-cloud-sdk/bin/gcloud container clusters get-credentials $cluster_name
 
-      - sed -i -e 's/{{version}}/'"$build_tag"'/' rc.yaml
-      - echo rc.yaml
-      - kubectl rolling-update -f rc.yaml
+      - kubectl rolling-update $service-name --image=$docker_repo/$service_name:$build_tag
