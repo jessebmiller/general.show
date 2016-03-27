@@ -6,6 +6,7 @@ machine:
     unittest_cmd: true
     docker_repo: jesse
     cluster_name: jbm-bz
+    project_name: jbmbz
     build_tag: $(cat $CIRCLE_PROJECT_REPONAME/Version)_build.$(echo $CIRCLE_SHA1 | cut -c1-7)
 
     CLOUDSDK_CORE_DISABLE_PROMPTS: 1
@@ -41,6 +42,8 @@ deployment:
       - ~/google-cloud-sdk/bin/gcloud components install kubectl
       - ~/google-cloud-sdk/bin/gcloud components update
       - echo $gcloud_key | base64 --decode > gcloud.json; gcloud auth activate-service-account $gcloud_email --key-file gcloud.json; ssh-keygen -f ~/.ssh/google_compute_engine -N ""
-      - gcloud container clusters get-credentials $cluster_name
+      - ~/google-cloud-sdk/bin/gcloud config set project $project_name
+      - ~/google-cloud-sdk/bin/gcloud config set container/cluster $cluster_name
+      - ~/google-cloud-sdk/bin/gcloud container clusters get-credentials $cluster_name
 
       - kubectl rolling-update -f rc.yaml
