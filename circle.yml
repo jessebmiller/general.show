@@ -33,6 +33,7 @@ deployment:
   index:
     branch: /.*/
     commands:
+      - docker login -e $docker_email -p $docker_pass -u $docker_user
       - docker push $docker_repo/$service_name:$build_tag
 
       # set up gcloud
