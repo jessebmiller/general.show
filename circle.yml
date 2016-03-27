@@ -38,6 +38,7 @@ deployment:
 
       # set up gcloud
       - if [ ! -d ~/google-cloud-sdk ]; then curl https://sdk.cloud.google.com | bash; fi
+      - ~/google-cloud-sdk/bin/gcloud components install kubectl
       - ~/google-cloud-sdk/bin/gcloud components update
       - echo $gcloud_key | base64 --decode > gcloud.json; gcloud auth activate-service-account $gcloud_email --key-file gcloud.json; ssh-keygen -f ~/.ssh/google_compute_engine -N ""
       - gcloud container clusters get-credentials $cluster_name
