@@ -46,4 +46,4 @@ deployment:
       - ~/google-cloud-sdk/bin/gcloud config set container/cluster $cluster_name
       - ~/google-cloud-sdk/bin/gcloud container clusters get-credentials $cluster_name
 
-      - kubectl rolling-update $service-name --image=$docker_repo/$service_name:$build_tag
+      - kubectl rolling-update $service_name --image=$docker_repo/$service_name:$build_tag
