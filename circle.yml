@@ -23,7 +23,7 @@ dependencies:
     - docker build -t $docker_repo/$service_name:$build_tag .
 
     # cache the image to speed up the next build
-    - mkdir -p ~/docker; docker save us.gcr.io/lexical-cider-93918/$service_name:$build_tag > ~/docker/image.tar
+    - mkdir -p ~/docker; docker save $docker_repo/$service_name:$build_tag > ~/docker/image.tar
 
 test:
   override:
