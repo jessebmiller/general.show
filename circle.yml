@@ -1,0 +1,44 @@
+machine:
+  services:
+    - docker
+  environment:
+    service_name: general-show
+    unittest_cmd: true
+    docker_repo: jesse
+    cluster_name: jbm-bz
+    build_tag: $(cat $CIRCLE_PROJECT_REPONAME/Version)_build.$(echo $CIRCLE_SHA1 | cut -c1-7)
+
+    CLOUDSDK_CORE_DISABLE_PROMPTS: 1
+    CLOUDSDK_PYTHON_SITEPACKAGES: 1
+    CLOUDSDK_COMPUTE_ZONE: us-central1-a
+    PATH: $PATH:/home/ubuntu/google-cloud-sdk/bin
+
+dependencies:
+  cache_directories:
+    - ~/google-cloud-sdk
+    - ~/docker
+  override:
+    # build the image
+    - if [[ -e ~/docker/image.tar ]]; then docker load -i ~/docker/image.tar; fi
+    - docker build -t $docker_repo/$service_name:$build_tag .
+
+    # cache the image to speed up the next build
+    - mkdir -p ~/docker; docker save us.gcr.io/lexical-cider-93918/$service_name:$build_tag > ~/docker/image.tar
+
+test:
+  override:
+    - docker run $docker_repo/$service_name:$build_tag $unittest_cmd
+
+deployment:
+  index:
+    branch: /.*/
+    commands:
+      - docker push $docker_repo/$service_name:$build_tag
+
+      # set up gcloud
+      - if [ ! -d ~/google-cloud-sdk ]; then curl https://sdk.cloud.google.com | bash; fi
+      - ~/google-cloud-sdk/bin/gcloud components update
+      - echo $gcloud_key | base64 --decode > gcloud.json; gcloud auth activate-service-account $gcloud_email --key-file gcloud.json; ssh-keygen -f ~/.ssh/google_compute_engine -N ""
+      - gcloud container clusters get-credentials $cluster_name
+
+      - kubectl rolling-update -f rc.yaml
