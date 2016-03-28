@@ -31,8 +31,8 @@ test:
     - docker run $docker_repo/$service_name:$build_tag $unittest_cmd
 
 deployment:
-  index:
-    branch: /.*/
+  production:
+    branch: production
     commands:
       - docker login -e $docker_email -p $docker_pass -u $docker_user
       - docker push $docker_repo/$service_name:$build_tag
