@@ -39,11 +39,12 @@ deployment:
 
       # set up gcloud
       - if [ ! -d ~/google-cloud-sdk ]; then curl https://sdk.cloud.google.com | bash; fi
-      - ~/google-cloud-sdk/bin/gcloud components install kubectl
       - ~/google-cloud-sdk/bin/gcloud components update
       - echo $gcloud_key | base64 --decode > gcloud.json; gcloud auth activate-service-account $gcloud_email --key-file gcloud.json; ssh-keygen -f ~/.ssh/google_compute_engine -N ""
       - ~/google-cloud-sdk/bin/gcloud config set project $project_name
-      - ~/google-cloud-sdk/bin/gcloud config set container/cluster $cluster_name
-      - ~/google-cloud-sdk/bin/gcloud container clusters get-credentials $cluster_name
 
-      - kubectl rolling-update $service_name --image=$docker_repo/$service_name:$build_tag
+      # replace the running container
+      - ~/google-cloud-sdk/bin/gcloud compute ssh --command 'docker pull jesse/general-show:$build_tag'
+      - ~/google-cloud-sdk/bin/gcloud compute ssh --command 'docker stop general-show'
+      - ~/google-cloud-sdk/bin/gcloud compute ssh --command 'docker rm general-show'
+      - ~/google-cloud-sdk/bin/gcloud compute ssh --command 'docker run -d --name=general.show --restart=unless-stopped --net=sites jesse/general-show:$build_tag'
