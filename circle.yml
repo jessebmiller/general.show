@@ -44,7 +44,7 @@ deployment:
       - ~/google-cloud-sdk/bin/gcloud config set project $project_name
 
       # replace the running container
-      - ~/google-cloud-sdk/bin/gcloud compute ssh --command 'docker pull jesse/general-show:$build_tag'
-      - ~/google-cloud-sdk/bin/gcloud compute ssh --command 'docker stop general-show'
-      - ~/google-cloud-sdk/bin/gcloud compute ssh --command 'docker rm general-show'
-      - ~/google-cloud-sdk/bin/gcloud compute ssh --command 'docker run -d --name=general.show --restart=unless-stopped --net=sites jesse/general-show:$build_tag'
+      - ~/google-cloud-sdk/bin/gcloud compute ssh jbm-micro --command 'docker pull jesse/general-show:$build_tag'
+      - ~/google-cloud-sdk/bin/gcloud compute ssh jbm-micro --command 'docker stop general-show'
+      - ~/google-cloud-sdk/bin/gcloud compute ssh jbm-micro --command 'docker rm general-show'
+      - ~/google-cloud-sdk/bin/gcloud compute ssh jbm-micro --command 'docker run -d --name=general.show --restart=unless-stopped --net=sites jesse/general-show:$build_tag'
